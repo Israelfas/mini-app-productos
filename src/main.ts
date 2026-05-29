@@ -68,6 +68,8 @@ function eliminarProducto(id: string): void {
   if (productos.length === 0) {
     estadoVacio!.classList.remove("oculto");
   }
+
+  actualizarContador();
 }
 
 function renderProducto(p: Producto): HTMLLIElement {
@@ -113,6 +115,28 @@ function renderProducto(p: Producto): HTMLLIElement {
   return li;
 }
 
+function contarPorCategoria(items: Producto[]): Record<Categoria, number> {
+  const conteo: Record<Categoria, number> = {
+    electronica: 0,
+    ropa: 0,
+    alimentos: 0,
+  };
+  for (const p of items) {
+    conteo[p.categoria] = conteo[p.categoria] + 1;
+  }
+  return conteo;
+}
+
+function actualizarContador(): void {
+  const conteo = contarPorCategoria(productos);
+  const items = document.querySelectorAll<HTMLSpanElement>(".contador-item");
+  items.forEach((item) => {
+    const cat = item.dataset.cat as Categoria;
+    const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+    item.textContent = `${label}: ${conteo[cat]}`;
+  });
+}
+
 form.addEventListener("submit", (evento) => {
   evento.preventDefault();
   limpiarErrores();
@@ -136,6 +160,7 @@ form.addEventListener("submit", (evento) => {
 
   const li = renderProducto(nuevo);
   lista.appendChild(li);
+  actualizarContador();
 
   estadoVacio.classList.add("oculto");
   form.reset();
