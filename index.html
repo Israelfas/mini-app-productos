@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini App de Productos</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Mini App de Productos</h1>
+      <p>Semana 6 · Manipulación del DOM con TypeScript</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Agregar producto</h2>
+        <form id="form-producto" novalidate>
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" />
+            <p class="error" id="error-nombre"></p>
+          </div>
+          <div class="campo">
+            <label for="precio">Precio (USD)</label>
+            <input id="precio" name="precio" type="number" step="0.01" />
+            <p class="error" id="error-precio"></p>
+          </div>
+          <div class="campo">
+            <label for="stock">Stock</label>
+            <input id="stock" name="stock" type="number" />
+            <p class="error" id="error-stock"></p>
+          </div>
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria">
+              <option value="">— Selecciona —</option>
+              <option value="electronica">Electrónica</option>
+              <option value="ropa">Ropa</option>
+              <option value="alimentos">Alimentos</option>
+            </select>
+            <p class="error" id="error-categoria"></p>
+          </div>
+          <button type="submit">Agregar al inventario</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Inventario</h2>
+        <p class="vacio" id="estado-vacio">Aún no hay productos. Agrega el primero.</p>
+        <ul id="lista-productos"></ul>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
