@@ -8,18 +8,16 @@ import {
   type Categoria,
 } from "./validators.ts";
 
-// ── Tipo del dominio ─────────────────────────────────────────
 type Producto = {
+  id: string;
   nombre: string;
   precio: number;
   stock: number;
   categoria: Categoria;
 };
 
-// ── Estado local ─────────────────────────────────────────────
 const productos: Producto[] = [];
 
-// ── Selección tipada de elementos ────────────────────────────
 const form            = document.querySelector<HTMLFormElement>("#form-producto");
 const inputNombre     = document.querySelector<HTMLInputElement>("#nombre");
 const inputPrecio     = document.querySelector<HTMLInputElement>("#precio");
@@ -32,7 +30,6 @@ if (!form || !inputNombre || !inputPrecio || !inputStock || !selectCategoria || 
   throw new Error("Faltan elementos en el HTML. Revisa los id.");
 }
 
-// ── Helpers de error ─────────────────────────────────────────
 function mostrarError(idCampo: string, mensaje: string): void {
   const p = document.querySelector<HTMLParagraphElement>(`#error-${idCampo}`);
   if (!p) return;
@@ -59,7 +56,20 @@ function tomar<T>(resultado: Resultado<T>, idCampo: string): T | null {
   return null;
 }
 
-// ── Render de producto ───────────────────────────────────────
+function eliminarProducto(id: string): void {
+  const indice = productos.findIndex((p) => p.id === id);
+  if (indice === -1) return;
+
+  productos.splice(indice, 1);
+
+  const li = lista!.querySelector<HTMLElement>(`[data-id="${id}"]`)?.closest("li");
+  if (li) li.remove();
+
+  if (productos.length === 0) {
+    estadoVacio!.classList.remove("oculto");
+  }
+}
+
 function renderProducto(p: Producto): HTMLLIElement {
   const li = document.createElement("li");
   li.className = "producto";
@@ -85,26 +95,43 @@ function renderProducto(p: Producto): HTMLLIElement {
   meta.appendChild(tag);
   meta.appendChild(stock);
 
+  const botonEliminar = document.createElement("button");
+  botonEliminar.type = "button";
+  botonEliminar.className = "btn-eliminar";
+  botonEliminar.textContent = "Eliminar";
+  botonEliminar.dataset.id = p.id;
+
+  botonEliminar.addEventListener("click", () => {
+    eliminarProducto(p.id);
+  });
+
   li.appendChild(nombre);
   li.appendChild(precio);
   li.appendChild(meta);
+  li.appendChild(botonEliminar);
 
   return li;
 }
 
-// ── Handler del submit ───────────────────────────────────────
 form.addEventListener("submit", (evento) => {
   evento.preventDefault();
   limpiarErrores();
 
-  const nombre    = tomar(validarNombre(inputNombre.value),       "nombre");
-  const precio    = tomar(validarPrecio(inputPrecio.value),       "precio");
-  const stock     = tomar(validarStock(inputStock.value),         "stock");
-  const categoria = tomar(validarCategoria(selectCategoria.value),"categoria");
+  const nombre    = tomar(validarNombre(inputNombre.value),        "nombre");
+  const precio    = tomar(validarPrecio(inputPrecio.value),        "precio");
+  const stock     = tomar(validarStock(inputStock.value),          "stock");
+  const categoria = tomar(validarCategoria(selectCategoria.value), "categoria");
 
   if (nombre === null || precio === null || stock === null || categoria === null) return;
 
-  const nuevo: Producto = { nombre, precio, stock, categoria };
+  const nuevo: Producto = {
+    id: crypto.randomUUID(),
+    nombre,
+    precio,
+    stock,
+    categoria,
+  };
+
   productos.push(nuevo);
 
   const li = renderProducto(nuevo);
@@ -114,5 +141,3 @@ form.addEventListener("submit", (evento) => {
   form.reset();
   inputNombre.focus();
 });
-
-console.log("Sesión 1 completa ✋");

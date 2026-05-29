@@ -165,3 +165,23 @@ button[type="submit"]:hover { background: #016b78; }
   text-transform: capitalize;
   margin-right: 0.5rem;
 }
+
+/* ── H2 · Botón eliminar ────────────────────────────────── */
+.btn-eliminar {
+  grid-column: 1 / -1;
+  justify-self: end;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--coral);
+  border-radius: 6px;
+  background: white;
+  color: var(--coral);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-eliminar:hover {
+  background: var(--coral);
+  color: white;
+}
